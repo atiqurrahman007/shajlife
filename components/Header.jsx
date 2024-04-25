@@ -38,9 +38,8 @@ const controlNavbar = ()=>{
 
      })
     return (
-        <header className={`w-full h-[50px] md:h-[80px] bg-white flex items-center
-         justify-between sticky top-0 z-20 transition-transform duration-300 ${show}`}>
-           <Wrapper className="h-[60px]  flex justify-between items-center">
+        <header className={`w-full h-[50px] md:h-[60px] bg-white  sticky top-0 z-10 transition-transform duration-300 ${show}`}>
+           <Wrapper className="h-full  flex justify-start md:justify-center items-center">
              {/* mobile icon start */}
              <div className="md:hidden w-8 md:w-12 h-8 md:h-12 rounded-full 
                           flex justify-center items-center hover:bg-black/[0.03] 
@@ -50,11 +49,9 @@ const controlNavbar = ()=>{
                             <VscChromeClose  className="text-[16px]" onClick={()=>setMobileMenu(false)}/>
 
                           ):( <BsList className="text-[16px] md:text-[20px]" onClick={()=>setMobileMenu(true)}/>)}
-                       </div>  
+                </div>  
                 {/* mobile icon start */}   
-              <Link href="/">
-                <img src="/logo.svg" alt="logo" className=" w-[40px] md:w-[60px] "/>
-              </Link>
+              
                <Menu showCatMenu={showCatMenu}
                       setShowCatMenu={setShowCatMenu}
                 />
@@ -63,22 +60,7 @@ const controlNavbar = ()=>{
                             setShowCatMenu={setShowCatMenu} 
                             setMobileMenu={setMobileMenu} />
                   )}
-                <div className="flex items-center gap-2 text-black">
-
-                     <div className="w-8 md:w-12 h-8 md:h-12 rounded-full 
-                          flex justify-center items-center hover:bg-black/[0.03] 
-                           cursor-pointer relative">
-                       <BsCart className="text-[15px] md:text-[20px]"/>
-                       <div className="absolute h-[14px] md:h-[18px] min-w-[14px] md:min-w[18px] 
-                            bg-red-600 rounded-full top-1 left-5 md:left-7 flex justify-center items-center
-                            text-white text-[10px] md:text-[12px] px-[2px] md:px-[5px]">5</div>
-                     </div>
-                    
-
-
-               
-                      
-                </div>
+                
            </Wrapper>
         </header>
     )

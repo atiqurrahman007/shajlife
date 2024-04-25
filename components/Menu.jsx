@@ -1,53 +1,60 @@
-import React from 'react'
+"use client"
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
+import { fetchDataFromApi } from '@/utils/api';
+
 import { BsChevronDown } from "react-icons/bs";
 
-const data = [
-    { id: 1, name: "Home", url: "/" },
-    { id: 2, name: "About", url: "/about" },
-    { id: 3, name: "Categories", subMenu: true },
-    { id: 4, name: "Contact", url: "/contact" },
-];
-
-const subMenuData = [
-    { id: 1, name: "Jordan", doc_count: 11 },
-    { id: 2, name: "Sneakers", doc_count: 8 },
-    { id: 3, name: "Running shoes", doc_count: 64 },
-    { id: 4, name: "Football shoes", doc_count: 107 },
-];
 
 const Menu = ({showCatMenu, setShowCatMenu}) => {
+    const [activeItemIndex, setActiveItemIndex] = useState(null);
+    const [data, setData] = useState({ data: [] })
+    useEffect( ()=>{
+        fetchCategory();
+      }, [])
+    
+      const fetchCategory = async ()=>{
+        const response  = await fetchDataFromApi('/api/v1/categories');
+        setData({ data: response.data });
+      }
+
     return (
         <ul className="hidden md:flex items-center gap-8 font-medium text-black">
-             {data.map((item, index)=>{
-                 return <React.Fragment key={index}>
-                     {item?.subMenu? (
-                         <li className="cursor-pointer flex items-center gap-2 relative"
-                          onMouseEnter ={()=>setShowCatMenu(true)}
-                          onMouseLeave = {()=>setShowCatMenu(false)}
-                         >
-                             {item.name}
-                             <BsChevronDown size={14}/>
-                             {showCatMenu && (
-                                 <ul className="bg-white absolute shadow-lg top-6 left-0 min-w-[250px] px-1 py-1 text-black">
-                                     {subMenuData.map((item, index)=>{
-                                         return(
-                                             <Link key={index} href="/" onClick={()=>setShowCatMenu(false)}>
-                                                 <li className="h-12 flex items-center px-3 hover:bg-black/[0.03] rounded-md">{item.name}</li>
-                                             </Link>
-                                         )
-                                     })}
-                                 </ul>
-                             )}
-                         </li>
-                     ):(
-                         <li className="cursor-pointer">
-                             <Link href={item?.url}>{item.name}</Link>
-                         </li>
-                     )}
-                 </React.Fragment>
-             })}
-        </ul>
+        {data.data.map((item, index) => (
+            <React.Fragment key={index}>
+                {item?.children? (
+                    <li
+                        className="cursor-pointer flex items-center gap-2 relative"
+                        onMouseEnter={() => {
+                            setShowCatMenu(true);
+                            setActiveItemIndex(index);
+                          }}
+                          onMouseLeave={() => {
+                            setShowCatMenu(false);
+                            setActiveItemIndex(null);
+                          }}
+                    >
+                        {item.name}
+                        <BsChevronDown size={14} />
+                        {showCatMenu && activeItemIndex === index && (
+                            <ul className="bg-white absolute shadow-lg top-6 left-0 min-w-[250px] px-1 py-1 text-black">
+                                {item.children.map((childItem, childIndex) => (
+                                    <Link key={childIndex} href={`/category/${childItem.slug}`} onClick={() => setShowCatMenu(false)}>
+                                        <li className="h-12 flex items-center px-3 hover:bg-black/[0.03] rounded-md">{childItem.name}</li>
+                                    </Link>
+                                ))}
+                            </ul>
+                        )}
+                    </li>
+                ) : (
+                    <li className="cursor-pointer">
+                        <Link href={item?.url}>{item.name}</Link>
+                    </li>
+                )}
+            </React.Fragment>
+        ))}
+    </ul>
+    
     )
 }
 
